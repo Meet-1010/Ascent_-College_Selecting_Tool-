@@ -374,3 +374,24 @@ body.cmp-open .main{padding-bottom:70px}
   .cpage-summary-hdr{gap:10px}
   .cpage-summary-crown{font-size:24px}
 }
+
+/* ── TEXT SIZE SCALE (only font-size, not layout) ── */
+:root{--fs:1}
+.card-name{font-size:calc(15px * var(--fs)) !important}
+.card-loc,.card-tags .tag{font-size:calc(12px * var(--fs)) !important}
+.cg-lbl{font-size:calc(10px * var(--fs)) !important}
+.cg-val{font-size:calc(13px * var(--fs)) !important}
+.univ-card .card-grid{font-size:calc(12px * var(--fs)) !important}
+.td-name{font-size:calc(13px * var(--fs)) !important}
+.td-sub,.cpage-row-label,.cpage-td,.cpage-th-uni,.cpage-th-label{font-size:calc(12px * var(--fs)) !important}
+.sidebar-title,.filter-label,.tier-chip,.chip-count{font-size:calc(11px * var(--fs)) !important}
+.filter-group select{font-size:calc(12px * var(--fs)) !important}
+.spiral-card-name{font-size:calc(15px * var(--fs)) !important}
+.spiral-card-loc,.spiral-card-stat{font-size:calc(11px * var(--fs)) !important}
+.spiral-focus-name{font-size:calc(19px * var(--fs)) !important}
+.spiral-focus-loc{font-size:calc(12px * var(--fs)) !important}
+.cpage-sc-name{font-size:calc(15px * var(--fs)) !important}
+.cpage-sc-loc,.cpage-sc-admit,.cpage-sc-tuition,.cpage-sc-wins{font-size:calc(11px * var(--fs)) !important}
+.cpage-sc-rank{font-size:calc(24px * var(--fs)) !important}
+.cpage-summary-item,.cpage-summary-note{font-size:calc(13px * var(--fs)) !important}
+.results-count,.toolbar{font-size:calc(13px * var(--fs)) !important}

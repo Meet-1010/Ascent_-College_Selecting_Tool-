@@ -112,8 +112,8 @@ export default function Sidebar({ open, onClose, filters, setFilters, counts, on
             <span className="font-size-a-sm">A</span>
             <input
               type="range"
-              min={90}
-              max={130}
+              min={100}
+              max={150}
               step={5}
               value={fontSize}
               onChange={(e) => onFontSize(Number(e.target.value))}
