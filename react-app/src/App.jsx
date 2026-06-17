@@ -13,6 +13,7 @@ import UniversityModal from "./components/UniversityModal";
 import CompareModal from "./components/CompareModal";
 import ProfileModal from "./components/ProfileModal";
 import Toast from "./components/Toast";
+import TourGuide, { TOUR_KEY } from "./components/TourGuide";
 
 const DEFAULT_FILTERS = { tier: "ALL", starredOnly: false, gre: "", tuition: "", admit: "", fund: "", state: "", sort: "rank" };
 
@@ -31,6 +32,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [toast, setToast] = useState(null);
   const [fontSize, setFontSize] = useState(100);
+  const [showTour, setShowTour] = useState(() => !localStorage.getItem(TOUR_KEY));
   const toastTimer = useRef(null);
   const [profile, saveProfile] = useProfile();
 
@@ -164,6 +166,7 @@ export default function App() {
         page={page}
         dragging={dragging}
         onDropCompare={(id) => { toggleCmp(id); showToast(`Added to compare ⟷`); }}
+        onTourReplay={() => setShowTour(true)}
       />
       {page === "compare" && (
         <ComparePage
@@ -219,6 +222,7 @@ export default function App() {
 
       <CompareBar compareList={compareUnis} onShowCompare={() => setShowCompareModal(true)} onClear={clearCompare} onRemove={toggleCmp} />
       <Toast toast={toast} />
+      {showTour && <TourGuide onDone={() => setShowTour(false)} />}
     </>
   );
 }

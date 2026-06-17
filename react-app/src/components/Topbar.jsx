@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const VIEWS = ["spiral", "grid", "table"];
 
-export default function Topbar({ search, onSearch, view, onView, onRefresh, refreshing, total, onMenu, compareCount, onComparePage, page, onDropCompare, dragging }) {
+export default function Topbar({ search, onSearch, view, onView, onRefresh, refreshing, total, onMenu, compareCount, onComparePage, page, onDropCompare, dragging, onTourReplay }) {
   const activeIdx = VIEWS.indexOf(view);
   const [dragOver, setDragOver] = useState(false);
 
@@ -66,6 +66,7 @@ export default function Topbar({ search, onSearch, view, onView, onRefresh, refr
         <button className={`btn-refresh ${refreshing ? "spinning" : ""}`} onClick={onRefresh} disabled={refreshing}>
           <span className="ri">↻</span> <span>{refreshing ? "Refreshing..." : "Refresh data"}</span>
         </button>
+        <button className="tour-help-btn" onClick={onTourReplay} title="Take a tour">?</button>
       </div>
     </div>
   );
