@@ -205,6 +205,7 @@ tr:hover td{background:var(--surface2)}
 .toast.show{transform:translateY(0);opacity:1}
 .toast-success{border-color:#059669;background:#065F46}
 body.cmp-open .toast{bottom:70px}
+body.cmp-open .main{padding-bottom:70px}
 
 /* ── EMPTY STATE ── */
 .empty{text-align:center;padding:60px 20px;color:var(--text3)}
