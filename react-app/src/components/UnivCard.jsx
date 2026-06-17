@@ -1,93 +1,127 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { tierBadgeClass, tierLabel, admitMid } from "../data/universities";
 
-function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop }) {
+function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop, setDragging }) {
+  const cardRef = useRef(null);
   const ghostRef = useRef(null);
 
-  const handleTouchStart = (e) => {
-    const touch = e.touches[0];
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
 
-    const ghost = document.createElement("div");
-    ghost.className = "drag-ghost-pill";
-    ghost.textContent = `⟷ ${short}`;
-    ghost.style.left = `${touch.clientX - 44}px`;
-    ghost.style.top = `${touch.clientY - 18}px`;
-    document.body.appendChild(ghost);
-    ghostRef.current = ghost;
-    onDragStart?.();
+    const handleTouchStart = (e) => {
+      const startTouch = e.touches[0];
+      const startX = startTouch.clientX;
+      const startY = startTouch.clientY;
+      let isDragging = false;
+      let timer = null;
 
-    const onMove = (ev) => {
-      ev.preventDefault();
-      const t = ev.touches[0];
-      const g = ghostRef.current;
-      if (!g) return;
+      const beginDrag = (t) => {
+        isDragging = true;
+        const ghost = document.createElement("div");
+        ghost.className = "drag-ghost-pill";
+        ghost.textContent = `⟷ ${short}`;
+        ghost.style.left = `${t.clientX - 44}px`;
+        ghost.style.top = `${t.clientY - 18}px`;
+        document.body.appendChild(ghost);
+        ghostRef.current = ghost;
+        setDragging(true);
+        onDragStart?.();
+      };
 
-      g.style.left = `${t.clientX - 44}px`;
-      g.style.top = `${t.clientY - 18}px`;
+      // Long-press threshold: start drag after 300ms hold without significant movement
+      timer = setTimeout(() => {
+        if (!isDragging) beginDrag(startTouch);
+      }, 300);
 
-      const dz = document.querySelector(".compare-dropzone");
-      if (dz) {
-        const r = dz.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dist = Math.hypot(t.clientX - cx, t.clientY - cy);
-        // shrink ghost as it approaches (160px range → 0.3 scale at center)
-        const scale = Math.max(0.3, Math.min(1, dist / 160));
-        g.style.transform = `scale(${scale})`;
-        if (dist < Math.max(r.width, 60)) {
-          dz.classList.add("dz-drag-over");
-        } else {
-          dz.classList.remove("dz-drag-over");
+      const onMove = (ev) => {
+        const t = ev.touches[0];
+        const moved = Math.hypot(t.clientX - startX, t.clientY - startY);
+
+        // If moved more than 12px before long-press fires, cancel the timer
+        // and treat as a scroll — but if drag already started, keep going
+        if (!isDragging) {
+          if (moved > 12) {
+            clearTimeout(timer);
+            document.removeEventListener("touchmove", onMove);
+            document.removeEventListener("touchend", onEnd);
+          }
+          return;
         }
-      }
+
+        ev.preventDefault(); // prevent page scroll while dragging ghost
+        const g = ghostRef.current;
+        if (!g) return;
+
+        g.style.left = `${t.clientX - 44}px`;
+        g.style.top = `${t.clientY - 18}px`;
+
+        const dz = document.querySelector(".compare-dropzone");
+        if (dz) {
+          const r = dz.getBoundingClientRect();
+          const dist = Math.hypot(t.clientX - (r.left + r.width / 2), t.clientY - (r.top + r.height / 2));
+          g.style.transform = `scale(${Math.max(0.3, Math.min(1, dist / 160))})`;
+          dist < Math.max(r.width, 60)
+            ? dz.classList.add("dz-drag-over")
+            : dz.classList.remove("dz-drag-over");
+        }
+      };
+
+      const onEnd = (ev) => {
+        clearTimeout(timer);
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+
+        const g = ghostRef.current;
+        if (g) { document.body.removeChild(g); ghostRef.current = null; }
+
+        const dz = document.querySelector(".compare-dropzone");
+        if (dz) dz.classList.remove("dz-drag-over");
+
+        if (isDragging) {
+          setDragging(false);
+          onDragEnd?.();
+          if (dz) {
+            const r = dz.getBoundingClientRect();
+            const t = ev.changedTouches[0];
+            const pad = 32;
+            if (t.clientX >= r.left - pad && t.clientX <= r.right + pad &&
+                t.clientY >= r.top - pad && t.clientY <= r.bottom + pad) {
+              onTouchDrop?.(id);
+            }
+          }
+        }
+      };
+
+      document.addEventListener("touchmove", onMove, { passive: false });
+      document.addEventListener("touchend", onEnd, { passive: true });
     };
 
-    const onEnd = (ev) => {
-      document.removeEventListener("touchmove", onMove);
-      document.removeEventListener("touchend", onEnd);
+    // non-passive so we can call preventDefault during drag
+    el.addEventListener("touchstart", handleTouchStart, { passive: false });
+    return () => el.removeEventListener("touchstart", handleTouchStart);
+  }, [id, short, onDragStart, onDragEnd, onTouchDrop, setDragging]);
 
-      const g = ghostRef.current;
-      if (g) { document.body.removeChild(g); ghostRef.current = null; }
-
-      const dz = document.querySelector(".compare-dropzone");
-      if (dz) {
-        dz.classList.remove("dz-drag-over");
-        const r = dz.getBoundingClientRect();
-        const t = ev.changedTouches[0];
-        const pad = 24;
-        if (
-          t.clientX >= r.left - pad && t.clientX <= r.right + pad &&
-          t.clientY >= r.top - pad && t.clientY <= r.bottom + pad
-        ) {
-          onTouchDrop?.(id);
-        }
-      }
-      onDragEnd?.();
-    };
-
-    document.addEventListener("touchmove", onMove, { passive: false });
-    document.addEventListener("touchend", onEnd, { passive: true });
-  };
-
-  return { handleTouchStart };
+  return cardRef;
 }
 
 export default function UnivCard({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   const [dragging, setDragging] = useState(false);
-  const { handleTouchStart } = useTouchDrag({
+  const cardRef = useTouchDrag({
     id: u.id, short: u.short,
-    onDragStart: () => { setDragging(true); onDragStart?.(); },
-    onDragEnd: () => { setDragging(false); onDragEnd?.(); },
+    onDragStart: () => { onDragStart?.(); },
+    onDragEnd: () => { onDragEnd?.(); },
     onTouchDrop,
+    setDragging,
   });
 
   return (
     <div
+      ref={cardRef}
       className={`univ-card ${u.starred ? "starred-card" : ""}${dragging ? " is-dragging" : ""}`}
       draggable
       onDragStart={(e) => { e.dataTransfer.setData("univId", u.id); e.dataTransfer.effectAllowed = "copy"; setDragging(true); onDragStart?.(); }}
       onDragEnd={() => { setDragging(false); onDragEnd?.(); }}
-      onTouchStart={handleTouchStart}
       onClick={() => onOpen(u.id)}
     >
       <div className="card-actions">
