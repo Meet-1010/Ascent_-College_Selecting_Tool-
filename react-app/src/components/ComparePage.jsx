@@ -128,7 +128,7 @@ export default function ComparePage({ universities, onBack, onOpen, onClear }) {
         <button className="cpage-clear-btn" onClick={() => { onClear(); onBack(); }}>Clear all</button>
       </div>
 
-      {/* Scorecard row — sorted by rank */}
+      {/* Scorecard row — sorted by rank, scrolls horizontally */}
       <div className="cpage-scorecard-row">
         {sorted.map((u, idx) => (
           <div

@@ -9,7 +9,7 @@ const TIERS = [
   { key: "TIER5", cls: "tc-t5", label: "Tier 5 — Safety" },
 ];
 
-export default function Sidebar({ open, onClose, filters, setFilters, counts, onClearAll, onApplyProfile, profile, onEditProfile }) {
+export default function Sidebar({ open, onClose, filters, setFilters, counts, onClearAll, onApplyProfile, profile, onEditProfile, fontSize, onFontSize }) {
   const update = (key, value) => setFilters((f) => ({ ...f, [key]: value }));
 
   return (
@@ -104,6 +104,29 @@ export default function Sidebar({ open, onClose, filters, setFilters, counts, on
           <button className="btn-sm" onClick={onClearAll} style={{ width: "100%", justifyContent: "center", marginTop: 6 }}>
             ✕ Clear all filters
           </button>
+        </div>
+
+        <div className="sidebar-section">
+          <div className="sidebar-title">Text size</div>
+          <div className="font-size-row">
+            <span className="font-size-a-sm">A</span>
+            <input
+              type="range"
+              min={90}
+              max={130}
+              step={5}
+              value={fontSize}
+              onChange={(e) => onFontSize(Number(e.target.value))}
+              className="font-size-slider"
+            />
+            <span className="font-size-a-lg">A</span>
+          </div>
+          <div className="font-size-label">{fontSize === 100 ? "Default" : `${fontSize}%`}</div>
+          {fontSize !== 100 && (
+            <button className="btn-sm" onClick={() => onFontSize(100)} style={{ marginTop: 4, fontSize: 11 }}>
+              Reset to default
+            </button>
+          )}
         </div>
 
         <div className="sidebar-section">

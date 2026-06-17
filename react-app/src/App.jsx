@@ -30,8 +30,13 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [toast, setToast] = useState(null);
+  const [fontSize, setFontSize] = useState(100);
   const toastTimer = useRef(null);
   const [profile, saveProfile] = useProfile();
+
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize}%`;
+  }, [fontSize]);
 
   const showToast = (msg, type = "success") => {
     clearTimeout(toastTimer.current);
@@ -95,8 +100,8 @@ export default function App() {
       setUniversities((list) => list.map((x) => (x.id === id ? { ...x, cmp: false } : x)));
       setCompareIds((ids) => ids.filter((i) => i !== id));
     } else {
-      if (compareIds.length >= 4) {
-        showToast("Max 4 universities for comparison", "warn");
+      if (compareIds.length >= 8) {
+        showToast("Max 8 universities for comparison", "warn");
         return;
       }
       setUniversities((list) => list.map((x) => (x.id === id ? { ...x, cmp: true } : x)));
@@ -178,6 +183,8 @@ export default function App() {
           onApplyProfile={applyMyProfile}
           profile={profile}
           onEditProfile={() => setShowProfileModal(true)}
+          fontSize={fontSize}
+          onFontSize={setFontSize}
         />
         <div className="main">
           <StatsRow filtered={filtered} allCount={universities.length} starredCount={counts.starred} />
