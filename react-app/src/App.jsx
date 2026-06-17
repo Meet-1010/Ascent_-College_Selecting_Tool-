@@ -35,7 +35,7 @@ export default function App() {
   const [profile, saveProfile] = useProfile();
 
   useEffect(() => {
-    document.documentElement.style.fontSize = `${fontSize}%`;
+    document.body.style.zoom = `${fontSize}%`;
   }, [fontSize]);
 
   const showToast = (msg, type = "success") => {
