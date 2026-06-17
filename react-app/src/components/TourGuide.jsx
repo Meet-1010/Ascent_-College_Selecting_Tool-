@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
+import { GradCapIcon, SpiralTourIcon, LayoutGridIcon, SearchIcon, CompareArrowsIcon, SlidersIcon, LaunchIcon } from "./Icons";
 
 export const TOUR_KEY = "ascent-tour-v1";
 
 const STEPS = [
   {
     id: "welcome",
-    icon: "🎓",
+    icon: <GradCapIcon size={32} />,
     title: "Welcome to Ascent.",
     body: "Your personal guide to finding the perfect MS/CS program in the US. Let me show you around — takes just 30 seconds.",
     target: null,
   },
   {
     id: "spiral",
-    icon: "✦",
+    icon: <SpiralTourIcon size={32} />,
     title: "Spiral View",
     body: "Scroll up or down to spin through all 100 universities in this 3D carousel. Click any card to spotlight it and see stats.",
     target: ".spiral-wrap",
@@ -20,7 +21,7 @@ const STEPS = [
   },
   {
     id: "views",
-    icon: "⊞",
+    icon: <LayoutGridIcon size={32} />,
     title: "Three Ways to Explore",
     body: "Switch between Spiral, Grid, and Table views. The gold pill slides to your active view.",
     target: ".view-toggle",
@@ -28,7 +29,7 @@ const STEPS = [
   },
   {
     id: "search",
-    icon: "🔍",
+    icon: <SearchIcon size={32} />,
     title: "Search Instantly",
     body: "Type a university name, city, or state — the list filters in real time as you type.",
     target: ".topbar-search",
@@ -36,7 +37,7 @@ const STEPS = [
   },
   {
     id: "compare",
-    icon: "⟷",
+    icon: <CompareArrowsIcon size={32} />,
     title: "Drag to Compare",
     body: "Hold any card for a moment then drag it onto this icon. Up to 8 universities, ranked Best Fit — with a full side-by-side breakdown.",
     target: ".compare-dropzone",
@@ -44,7 +45,7 @@ const STEPS = [
   },
   {
     id: "filters",
-    icon: "☰",
+    icon: <SlidersIcon size={32} />,
     title: "Filters & Text Size",
     body: "Tap the menu to filter by GRE requirement, tuition, admit rate, funding, and more. There's also a text size slider if you need it.",
     target: ".menu-btn",
@@ -52,7 +53,7 @@ const STEPS = [
   },
   {
     id: "done",
-    icon: "🚀",
+    icon: <LaunchIcon size={32} />,
     title: "You're all set!",
     body: "100 verified MS programs, 2026 data. Good luck with your applications — Ascent's got your back.",
     target: null,

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { tierBadgeClass, tierLabel, admitMid } from "../data/universities";
+import { PinIcon } from "./Icons";
 
 function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop, setDragging }) {
   const cardRef = useRef(null);
@@ -152,7 +153,7 @@ export default function UnivCard({ u, onOpen, onToggleStar, onToggleCmp, onDragS
       <div className="card-header">
         <div>
           <div className="card-name">{u.name}</div>
-          <div className="card-loc">📍 {u.loc}</div>
+          <div className="card-loc"><PinIcon size={11} style={{ marginRight: 3, opacity: 0.7, flexShrink: 0 }} />{u.loc}</div>
         </div>
         <span className={`tier-badge ${tierBadgeClass(u.tier)}`}>{tierLabel(u.tier)}</span>
       </div>

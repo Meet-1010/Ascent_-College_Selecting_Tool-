@@ -1,10 +1,11 @@
 import UnivCard from "./UnivCard";
+import { SearchIcon } from "./Icons";
 
 export default function GridView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   if (!universities.length) {
     return (
       <div className="empty">
-        <div className="empty-icon">🔍</div>
+        <div className="empty-icon"><SearchIcon size={42} style={{ opacity: 0.35 }} /></div>
         <div>No universities match your filters. Try clearing some.</div>
       </div>
     );

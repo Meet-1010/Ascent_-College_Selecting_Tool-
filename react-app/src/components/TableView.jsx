@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { tierBadgeClass, tierLabel, admitMid } from "../data/universities";
+import { SearchIcon } from "./Icons";
 
 function DraggableRow({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   const [dragging, setDragging] = useState(false);
@@ -152,7 +153,7 @@ export default function TableView({ universities, onOpen, onToggleStar, onToggle
   if (!universities.length) {
     return (
       <div className="empty">
-        <div className="empty-icon">🔍</div>
+        <div className="empty-icon"><SearchIcon size={42} style={{ opacity: 0.35 }} /></div>
         <div>No universities match your filters.</div>
       </div>
     );

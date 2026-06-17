@@ -1,4 +1,5 @@
 import { tierLabel, admitMid } from "../data/universities";
+import { CrownIcon } from "./Icons";
 
 const TIER_BADGE = { ELITE: "badge-elite", TIER2: "badge-t2", TIER3: "badge-t3", TIER4: "badge-t4", TIER5: "badge-t5" };
 
@@ -136,7 +137,7 @@ export default function ComparePage({ universities, onBack, onOpen, onClear }) {
             className={`cpage-scorecard${idx === 0 ? " cpage-scorecard-best" : ""}`}
             onClick={() => onOpen(u.id)}
           >
-            {idx === 0 && <div className="cpage-best-crown">👑 Best Fit</div>}
+            {idx === 0 && <div className="cpage-best-crown"><CrownIcon size={13} style={{ marginRight: 5, verticalAlign: "middle" }} />Best Fit</div>}
             <div className={`tier-badge ${TIER_BADGE[u.tier] || "badge-t5"}`}>{tierLabel(u.tier)}</div>
             <div className="cpage-sc-name">{u.name}</div>
             <div className="cpage-sc-loc">{u.loc}</div>
@@ -158,7 +159,7 @@ export default function ComparePage({ universities, onBack, onOpen, onClear }) {
               <th className="cpage-th-label">Criteria</th>
               {sorted.map((u, idx) => (
                 <th key={u.id} className={`cpage-th-uni${idx === 0 ? " cpage-th-best" : ""}`} onClick={() => onOpen(u.id)}>
-                  {idx === 0 && <span className="cpage-th-crown">👑</span>}
+                  {idx === 0 && <span className="cpage-th-crown"><CrownIcon size={12} /></span>}
                   {u.short}
                   <span className="cpage-th-loc">{u.loc}</span>
                 </th>
@@ -187,7 +188,7 @@ export default function ComparePage({ universities, onBack, onOpen, onClear }) {
       {summaryPoints.length > 0 && (
         <div className="cpage-summary">
           <div className="cpage-summary-hdr">
-            <span className="cpage-summary-crown">👑</span>
+            <span className="cpage-summary-crown"><CrownIcon size={22} /></span>
             <div>
               <div className="cpage-summary-title">Why {best.name} is your Best Fit</div>
               <div className="cpage-summary-sub">Based on rank, affordability, admit rate, GRE flexibility & funding</div>

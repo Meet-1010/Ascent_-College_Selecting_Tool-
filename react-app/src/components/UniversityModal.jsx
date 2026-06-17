@@ -1,4 +1,5 @@
 import { tierBadgeClass, tierLabel } from "../data/universities";
+import { PinIcon } from "./Icons";
 
 export default function UniversityModal({ u, onClose, onToggleStar, onToggleCmp }) {
   if (!u) return null;
@@ -8,7 +9,7 @@ export default function UniversityModal({ u, onClose, onToggleStar, onToggleCmp 
         <div>
           <div className="modal-title">{u.name}</div>
           <div className="modal-sub">
-            📍 {u.loc} &nbsp;·&nbsp; <span className={`tier-badge ${tierBadgeClass(u.tier)}`}>{tierLabel(u.tier)}</span>
+            <PinIcon size={11} style={{ marginRight: 4, opacity: 0.7, verticalAlign: "middle", display: "inline-block" }} />{u.loc} &nbsp;·&nbsp; <span className={`tier-badge ${tierBadgeClass(u.tier)}`}>{tierLabel(u.tier)}</span>
           </div>
         </div>
         <button

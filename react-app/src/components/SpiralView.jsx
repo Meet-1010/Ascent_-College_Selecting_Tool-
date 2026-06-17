@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { tierLabel } from "../data/universities";
+import { PinIcon, SearchIcon } from "./Icons";
 
 const STEP = 130; // px of scroll per card
 const ANGLE_STEP = 24; // degrees of rotation per card
@@ -220,7 +221,7 @@ export default function SpiralView({ universities, onOpen, onToggleStar, onToggl
   if (!count) {
     return (
       <div className="empty" style={{ color: "#fff" }}>
-        <div className="empty-icon">🔍</div>
+        <div className="empty-icon"><SearchIcon size={42} style={{ opacity: 0.35 }} /></div>
         <div>No universities match your filters. Try clearing some.</div>
       </div>
     );
@@ -264,7 +265,7 @@ export default function SpiralView({ universities, onOpen, onToggleStar, onToggl
             >
               <div className="spiral-card-tier" style={{ background: "rgba(0,0,0,.12)", color: style.ink }}>{tierLabel(u.tier)}</div>
               <div className="spiral-card-name">{u.name}</div>
-              <div className="spiral-card-loc">📍 {u.loc}</div>
+              <div className="spiral-card-loc"><PinIcon size={10} style={{ marginRight: 3, opacity: 0.65, flexShrink: 0 }} />{u.loc}</div>
               <div className="spiral-card-stat">{u.ts.split(" ")[0]} · {u.as} admit</div>
             </div>
           );
@@ -275,7 +276,7 @@ export default function SpiralView({ universities, onOpen, onToggleStar, onToggl
         <div className="spiral-focus">
           <div>
             <div className="spiral-focus-name">{focused.name}</div>
-            <div className="spiral-focus-loc">📍 {focused.loc} · #{focused.rank}</div>
+            <div className="spiral-focus-loc"><PinIcon size={11} style={{ marginRight: 4, opacity: 0.7, flexShrink: 0 }} />{focused.loc} · #{focused.rank}</div>
           </div>
           <div className="spiral-focus-actions">
             <button

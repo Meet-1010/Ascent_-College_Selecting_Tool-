@@ -1,8 +1,9 @@
 import { STATES } from "../data/universities";
+import { EliteStarIcon, TargetIcon } from "./Icons";
 
 const TIERS = [
   { key: "ALL", cls: "tc-all", label: "All universities" },
-  { key: "ELITE", cls: "tc-elite", label: "⭐ Elite — Top 10" },
+  { key: "ELITE", cls: "tc-elite", label: "Elite — Top 10", icon: <EliteStarIcon size={11} style={{ marginRight: 4, verticalAlign: "middle", display: "inline-block" }} /> },
   { key: "TIER2", cls: "tc-t2", label: "Tier 2 — Research" },
   { key: "TIER3", cls: "tc-t3", label: "Tier 3 — Strong" },
   { key: "TIER4", cls: "tc-t4", label: "Tier 4 — Accessible" },
@@ -25,7 +26,7 @@ export default function Sidebar({ open, onClose, filters, setFilters, counts, on
                 className={`tier-chip ${t.cls} ${!filters.starredOnly && filters.tier === t.key ? "active" : ""}`}
                 onClick={() => setFilters((f) => ({ ...f, tier: t.key, starredOnly: false }))}
               >
-                {t.label} <span className="chip-count">{t.key === "ALL" ? counts.all : counts[t.key] || 0}</span>
+                {t.icon}{t.label} <span className="chip-count">{t.key === "ALL" ? counts.all : counts[t.key] || 0}</span>
               </div>
             ))}
             <div
@@ -139,7 +140,7 @@ export default function Sidebar({ open, onClose, filters, setFilters, counts, on
             Key project: <b>{profile.keyProject}</b><br />{profile.locationLabel}: <b>{profile.location}</b>
           </div>
           <button className="btn-sm" style={{ width: "100%", justifyContent: "center", marginTop: 8 }} onClick={onApplyProfile}>
-            🎯 Filter for my profile
+            <TargetIcon size={13} style={{ marginRight: 5, verticalAlign: "middle", display: "inline-block" }} /> Filter for my profile
           </button>
         </div>
       </div>

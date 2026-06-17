@@ -28,7 +28,7 @@ export default function Topbar({ search, onSearch, view, onView, onRefresh, refr
         <span className="topbar-sub">{total} universities · 2026 verified data</span>
       </div>
       <div className="topbar-search">
-        <span className="si">🔍</span>
+        <span className="si"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="10.5" cy="10.5" r="7.5"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>
         <input
           type="text"
           placeholder="Search university, city, state..."
