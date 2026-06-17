@@ -67,7 +67,7 @@ function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop, setDragg
         }
       };
 
-      const onEnd = (ev) => {
+      const onEnd = () => {
         clearTimeout(timer);
         document.removeEventListener("touchmove", onMove);
         document.removeEventListener("touchend", onEnd);
@@ -76,20 +76,14 @@ function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop, setDragg
         if (g) { document.body.removeChild(g); ghostRef.current = null; }
 
         const dz = document.querySelector(".compare-dropzone");
+        // dz-drag-over is set live in onMove when finger is near the icon — use it as drop signal
+        const dropped = isDragging && dz?.classList.contains("dz-drag-over");
         if (dz) dz.classList.remove("dz-drag-over");
 
         if (isDragging) {
           setDragging(false);
           onDragEnd?.();
-          if (dz) {
-            const r = dz.getBoundingClientRect();
-            const t = ev.changedTouches[0];
-            const pad = 32;
-            if (t.clientX >= r.left - pad && t.clientX <= r.right + pad &&
-                t.clientY >= r.top - pad && t.clientY <= r.bottom + pad) {
-              onTouchDrop?.(id);
-            }
-          }
+          if (dropped) onTouchDrop?.(id);
         }
       };
 
