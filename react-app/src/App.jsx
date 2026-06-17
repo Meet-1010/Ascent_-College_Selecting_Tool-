@@ -8,6 +8,7 @@ import GridView from "./components/GridView";
 import TableView from "./components/TableView";
 import SpiralView from "./components/SpiralView";
 import CompareBar from "./components/CompareBar";
+import ComparePage from "./components/ComparePage";
 import UniversityModal from "./components/UniversityModal";
 import CompareModal from "./components/CompareModal";
 import ProfileModal from "./components/ProfileModal";
@@ -20,12 +21,14 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [view, setView] = useState("spiral");
+  const [page, setPage] = useState("main");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [modalId, setModalId] = useState(null);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const [profile, saveProfile] = useProfile();
@@ -145,13 +148,26 @@ export default function App() {
         search={search}
         onSearch={setSearch}
         view={view}
-        onView={setView}
+        onView={(v) => { setView(v); setPage("main"); }}
         onRefresh={doRefresh}
         refreshing={refreshing}
         total={universities.length}
         onMenu={() => setSidebarOpen((o) => !o)}
+        compareCount={compareIds.length}
+        onComparePage={() => setPage("compare")}
+        page={page}
+        dragging={dragging}
+        onDropCompare={(id) => { toggleCmp(id); showToast(`Added to compare ⟷`); }}
       />
-      <div className="layout">
+      {page === "compare" && (
+        <ComparePage
+          universities={compareUnis}
+          onBack={() => setPage("main")}
+          onOpen={setModalId}
+          onClear={clearCompare}
+        />
+      )}
+      <div className="layout" style={{ display: page === "compare" ? "none" : "flex" }}>
         <Sidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -174,9 +190,9 @@ export default function App() {
               )}
             </div>
           </div>
-          {view === "grid" && <GridView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} />}
-          {view === "table" && <TableView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} />}
-          {view === "spiral" && <SpiralView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} />}
+          {view === "grid" && <GridView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
+          {view === "table" && <TableView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
+          {view === "spiral" && <SpiralView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
         </div>
       </div>
 

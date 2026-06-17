@@ -1,8 +1,25 @@
+import { useState } from "react";
 import { tierBadgeClass, tierLabel, admitMid } from "../data/universities";
 
-export default function UnivCard({ u, onOpen, onToggleStar, onToggleCmp }) {
+export default function UnivCard({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd }) {
+  const [dragging, setDragging] = useState(false);
+
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData("univId", u.id);
+    e.dataTransfer.effectAllowed = "copy";
+    setDragging(true);
+    onDragStart?.();
+  };
+  const handleDragEnd = () => { setDragging(false); onDragEnd?.(); };
+
   return (
-    <div className={`univ-card ${u.starred ? "starred-card" : ""}`} onClick={() => onOpen(u.id)}>
+    <div
+      className={`univ-card ${u.starred ? "starred-card" : ""}${dragging ? " is-dragging" : ""}`}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onClick={() => onOpen(u.id)}
+    >
       <div className="card-actions">
         <button
           className={`star-btn ${u.starred ? "on" : ""}`}

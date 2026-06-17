@@ -40,7 +40,7 @@ function wrapDelta(delta, mod) {
   return delta - mod * Math.round(delta / mod);
 }
 
-export default function SpiralView({ universities, onOpen, onToggleStar }) {
+export default function SpiralView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd }) {
   const scrollerRef = useRef(null);
   const wrapRef = useRef(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -247,6 +247,7 @@ export default function SpiralView({ universities, onOpen, onToggleStar }) {
               key={u.id}
               data-id={u.id}
               className={`spiral-card ${isHover ? "is-hover" : ""}`}
+              draggable
               style={{
                 background: style.bg,
                 color: style.ink,
@@ -258,6 +259,8 @@ export default function SpiralView({ universities, onOpen, onToggleStar }) {
               onClick={() => selectCard(u, i)}
               onMouseMove={(e) => onCardMouseMove(e, u.id)}
               onMouseLeave={onCardMouseLeave}
+              onDragStart={(e) => { e.dataTransfer.setData("univId", u.id); e.dataTransfer.effectAllowed = "copy"; onDragStart?.(); }}
+              onDragEnd={() => onDragEnd?.()}
             >
               <div className="spiral-card-tier" style={{ background: "rgba(0,0,0,.12)", color: style.ink }}>{tierLabel(u.tier)}</div>
               <div className="spiral-card-name">{u.name}</div>
@@ -282,6 +285,15 @@ export default function SpiralView({ universities, onOpen, onToggleStar }) {
             >
               {focused.starred ? "★" : "☆"}
             </button>
+            {onToggleCmp && (
+              <button
+                className={`spiral-cmp-btn ${focused.cmp ? "on" : ""}`}
+                onClick={() => onToggleCmp(focused.id)}
+                title={focused.cmp ? "Remove from compare" : "Add to compare"}
+              >
+                ⟷ {focused.cmp ? "In compare" : "Compare"}
+              </button>
+            )}
             <button className="mbtn primary" onClick={() => onOpen(focused.id)}>View details</button>
           </div>
         </div>
