@@ -46,13 +46,13 @@ img,svg{display:block}
 .view-btn.active{color:#1A1A17;font-weight:600}
 
 /* ── COMPARE DROP ZONE ── */
-.compare-dropzone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 10px;border-radius:10px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .18s;flex-shrink:0;min-width:58px}
+.compare-dropzone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 10px;border-radius:10px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .2s,min-width .2s,padding .2s;flex-shrink:0;min-width:58px}
 .compare-dropzone:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
 .compare-dropzone.dz-has-items{border-color:var(--gold);color:var(--gold);background:rgba(207,169,75,.12)}
 .compare-dropzone.dz-active-page{border-color:var(--gold);background:rgba(207,169,75,.22);color:var(--gold)}
-.compare-dropzone.dz-dragging{border-color:#34D399;color:#34D399;background:rgba(52,211,153,.1);animation:dz-pulse .9s ease-in-out infinite}
-.compare-dropzone.dz-drag-over{border-color:#34D399 !important;color:#fff !important;background:rgba(52,211,153,.28) !important;transform:scale(1.08)}
-@keyframes dz-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{box-shadow:0 0 0 7px rgba(52,211,153,0)}}
+.compare-dropzone.dz-dragging{border-color:#34D399;color:#34D399;background:rgba(52,211,153,.1);animation:dz-pulse .9s ease-in-out infinite;min-width:74px;padding:8px 14px}
+.compare-dropzone.dz-drag-over{border-color:#34D399 !important;color:#fff !important;background:rgba(52,211,153,.35) !important;transform:scale(1.14);min-width:84px;padding:10px 16px}
+@keyframes dz-pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{box-shadow:0 0 0 10px rgba(52,211,153,0)}}
 .dz-badge{position:absolute;top:-5px;right:-5px;background:var(--gold);color:#1A1A17;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px;min-width:16px;text-align:center;line-height:1.5;border:1.5px solid var(--navy)}
 .dz-label{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1;opacity:.8}
 
@@ -266,10 +266,17 @@ body.cmp-open .toast{bottom:70px}
   .main{padding:16px}
 }
 
+/* ── TOUCH DRAG GHOST ── */
+.drag-ghost-pill{position:fixed;pointer-events:none;z-index:9999;background:var(--navy);color:#fff;border:1.5px solid var(--gold);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);transform-origin:center top;transition:transform .1s ease;user-select:none}
+
 @media(max-width:680px){
-  .topbar{padding:0 12px;gap:8px}
-  .topbar-brand span:not(.topbar-sub){display:none}
-  .topbar-search{max-width:none}
+  :root{--topbar-h:100px}
+  .topbar{padding:6px 10px 0;gap:8px;flex-wrap:wrap;height:auto;min-height:60px;align-items:center}
+  .topbar-brand{display:none}
+  .topbar-search{max-width:none;flex:1 1 120px;order:1}
+  .topbar-right{order:2;margin-left:0}
+  .view-toggle{order:3;flex-basis:100%;margin-bottom:6px}
+  .view-btn{flex:1;justify-content:center}
   .btn-refresh span:last-child{display:none}
   .btn-refresh{padding:6px 10px}
   .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}

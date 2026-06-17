@@ -1,6 +1,6 @@
 import UnivCard from "./UnivCard";
 
-export default function GridView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd }) {
+export default function GridView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   if (!universities.length) {
     return (
       <div className="empty">
@@ -12,7 +12,7 @@ export default function GridView({ universities, onOpen, onToggleStar, onToggleC
   return (
     <div className="grid-view">
       {universities.map((u) => (
-        <UnivCard key={u.id} u={u} onOpen={onOpen} onToggleStar={onToggleStar} onToggleCmp={onToggleCmp} onDragStart={onDragStart} onDragEnd={onDragEnd} />
+        <UnivCard key={u.id} u={u} onOpen={onOpen} onToggleStar={onToggleStar} onToggleCmp={onToggleCmp} onDragStart={onDragStart} onDragEnd={onDragEnd} onTouchDrop={onTouchDrop} />
       ))}
     </div>
   );

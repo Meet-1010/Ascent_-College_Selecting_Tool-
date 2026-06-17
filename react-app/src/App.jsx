@@ -190,8 +190,8 @@ export default function App() {
               )}
             </div>
           </div>
-          {view === "grid" && <GridView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
-          {view === "table" && <TableView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
+          {view === "grid" && <GridView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} onTouchDrop={(id) => { toggleCmp(id); showToast("Added to compare ⟷"); }} />}
+          {view === "table" && <TableView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} onTouchDrop={(id) => { toggleCmp(id); showToast("Added to compare ⟷"); }} />}
           {view === "spiral" && <SpiralView universities={filtered} onOpen={setModalId} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onDragStart={() => setDragging(true)} onDragEnd={() => setDragging(false)} />}
         </div>
       </div>

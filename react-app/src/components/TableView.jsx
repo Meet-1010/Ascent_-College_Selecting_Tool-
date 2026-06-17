@@ -1,20 +1,73 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { tierBadgeClass, tierLabel, admitMid } from "../data/universities";
 
-function DraggableRow({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd }) {
+function DraggableRow({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   const [dragging, setDragging] = useState(false);
+  const ghostRef = useRef(null);
+
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    const ghost = document.createElement("div");
+    ghost.className = "drag-ghost-pill";
+    ghost.textContent = `⟷ ${u.short}`;
+    ghost.style.left = `${touch.clientX - 44}px`;
+    ghost.style.top = `${touch.clientY - 18}px`;
+    document.body.appendChild(ghost);
+    ghostRef.current = ghost;
+    setDragging(true);
+    onDragStart?.();
+
+    const onMove = (ev) => {
+      ev.preventDefault();
+      const t = ev.touches[0];
+      const g = ghostRef.current;
+      if (!g) return;
+      g.style.left = `${t.clientX - 44}px`;
+      g.style.top = `${t.clientY - 18}px`;
+      const dz = document.querySelector(".compare-dropzone");
+      if (dz) {
+        const r = dz.getBoundingClientRect();
+        const dist = Math.hypot(t.clientX - (r.left + r.width / 2), t.clientY - (r.top + r.height / 2));
+        const scale = Math.max(0.3, Math.min(1, dist / 160));
+        g.style.transform = `scale(${scale})`;
+        dist < Math.max(r.width, 60) ? dz.classList.add("dz-drag-over") : dz.classList.remove("dz-drag-over");
+      }
+    };
+
+    const onEnd = (ev) => {
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      const g = ghostRef.current;
+      if (g) { document.body.removeChild(g); ghostRef.current = null; }
+      setDragging(false);
+      const dz = document.querySelector(".compare-dropzone");
+      if (dz) {
+        dz.classList.remove("dz-drag-over");
+        const r = dz.getBoundingClientRect();
+        const t = ev.changedTouches[0];
+        const pad = 24;
+        if (t.clientX >= r.left - pad && t.clientX <= r.right + pad &&
+            t.clientY >= r.top - pad && t.clientY <= r.bottom + pad) {
+          onTouchDrop?.(u.id);
+        }
+      }
+      onDragEnd?.();
+    };
+
+    document.addEventListener("touchmove", onMove, { passive: false });
+    document.addEventListener("touchend", onEnd, { passive: true });
+  };
+
   return (
     <tr
       draggable
       className={dragging ? "is-dragging" : ""}
       onDragStart={(e) => { e.dataTransfer.setData("univId", u.id); e.dataTransfer.effectAllowed = "copy"; setDragging(true); onDragStart?.(); }}
       onDragEnd={() => { setDragging(false); onDragEnd?.(); }}
+      onTouchStart={handleTouchStart}
     >
       <td>
-        <button
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 15, color: u.starred ? "#D97706" : "#94A3B8" }}
-          onClick={() => onToggleStar(u.id)}
-        >
+        <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 15, color: u.starred ? "#D97706" : "#94A3B8" }} onClick={() => onToggleStar(u.id)}>
           {u.starred ? "★" : "☆"}
         </button>
       </td>
@@ -48,7 +101,7 @@ function DraggableRow({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDra
   );
 }
 
-export default function TableView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd }) {
+export default function TableView({ universities, onOpen, onToggleStar, onToggleCmp, onDragStart, onDragEnd, onTouchDrop }) {
   if (!universities.length) {
     return (
       <div className="empty">
@@ -78,7 +131,7 @@ export default function TableView({ universities, onOpen, onToggleStar, onToggle
         </thead>
         <tbody>
           {universities.map((u) => (
-            <DraggableRow key={u.id} u={u} onOpen={onOpen} onToggleStar={onToggleStar} onToggleCmp={onToggleCmp} onDragStart={onDragStart} onDragEnd={onDragEnd} />
+            <DraggableRow key={u.id} u={u} onOpen={onOpen} onToggleStar={onToggleStar} onToggleCmp={onToggleCmp} onDragStart={onDragStart} onDragEnd={onDragEnd} onTouchDrop={onTouchDrop} />
           ))}
         </tbody>
       </table>

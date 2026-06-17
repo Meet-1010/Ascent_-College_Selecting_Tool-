@@ -36,14 +36,14 @@ export default function Topbar({ search, onSearch, view, onView, onRefresh, refr
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
-      <div className="topbar-right">
-        <div className="view-toggle">
-          <span className="view-slider" style={{ transform: `translateX(${activeIdx * 100}%)` }} />
-          <button className={`view-btn ${page !== "compare" && view === "spiral" ? "active" : ""}`} onClick={() => onView("spiral")}>✲ Spiral</button>
-          <button className={`view-btn ${page !== "compare" && view === "grid" ? "active" : ""}`} onClick={() => onView("grid")}>⊞ Grid</button>
-          <button className={`view-btn ${page !== "compare" && view === "table" ? "active" : ""}`} onClick={() => onView("table")}>≡ Table</button>
-        </div>
+      <div className="view-toggle">
+        <span className="view-slider" style={{ transform: `translateX(${activeIdx * 100}%)` }} />
+        <button className={`view-btn ${page !== "compare" && view === "spiral" ? "active" : ""}`} onClick={() => onView("spiral")}>✲ Spiral</button>
+        <button className={`view-btn ${page !== "compare" && view === "grid" ? "active" : ""}`} onClick={() => onView("grid")}>⊞ Grid</button>
+        <button className={`view-btn ${page !== "compare" && view === "table" ? "active" : ""}`} onClick={() => onView("table")}>≡ Table</button>
+      </div>
 
+      <div className="topbar-right">
         {/* Compare drop zone */}
         <div
           className={`compare-dropzone${compareCount > 0 ? " dz-has-items" : ""}${dragging ? " dz-dragging" : ""}${dragOver ? " dz-drag-over" : ""}${page === "compare" ? " dz-active-page" : ""}`}
