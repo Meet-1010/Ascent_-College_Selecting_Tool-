@@ -67,23 +67,38 @@ function useTouchDrag({ id, short, onDragStart, onDragEnd, onTouchDrop, setDragg
         }
       };
 
-      const onEnd = () => {
+      const onEnd = (ev) => {
         clearTimeout(timer);
         document.removeEventListener("touchmove", onMove);
         document.removeEventListener("touchend", onEnd);
 
+        const touch = ev.changedTouches[0];
+
+        // remove ghost BEFORE elementFromPoint so it doesn't block the check
         const g = ghostRef.current;
         if (g) { document.body.removeChild(g); ghostRef.current = null; }
 
         const dz = document.querySelector(".compare-dropzone");
-        // dz-drag-over is set live in onMove when finger is near the icon — use it as drop signal
-        const dropped = isDragging && dz?.classList.contains("dz-drag-over");
+        const overByClass = dz?.classList.contains("dz-drag-over");
         if (dz) dz.classList.remove("dz-drag-over");
+
+        // also check where the finger actually lifted (handles fast drops)
+        const elAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+        const overByPoint = dz && (dz === elAtPoint || dz.contains(elAtPoint));
+
+        // generous rect fallback for near-misses
+        let overByRect = false;
+        if (dz) {
+          const r = dz.getBoundingClientRect();
+          const pad = 48;
+          overByRect = touch.clientX >= r.left - pad && touch.clientX <= r.right + pad &&
+                       touch.clientY >= r.top - pad && touch.clientY <= r.bottom + pad;
+        }
 
         if (isDragging) {
           setDragging(false);
           onDragEnd?.();
-          if (dropped) onTouchDrop?.(id);
+          if (overByClass || overByPoint || overByRect) onTouchDrop?.(id);
         }
       };
 

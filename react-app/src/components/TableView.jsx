@@ -65,22 +65,35 @@ function DraggableRow({ u, onOpen, onToggleStar, onToggleCmp, onDragStart, onDra
         }
       };
 
-      const onEnd = () => {
+      const onEnd = (ev) => {
         clearTimeout(timer);
         document.removeEventListener("touchmove", onMove);
         document.removeEventListener("touchend", onEnd);
+
+        const touch = ev.changedTouches[0];
 
         const g = ghostRef.current;
         if (g) { document.body.removeChild(g); ghostRef.current = null; }
 
         const dz = document.querySelector(".compare-dropzone");
-        const dropped = isDragging && dz?.classList.contains("dz-drag-over");
+        const overByClass = dz?.classList.contains("dz-drag-over");
         if (dz) dz.classList.remove("dz-drag-over");
+
+        const elAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+        const overByPoint = dz && (dz === elAtPoint || dz.contains(elAtPoint));
+
+        let overByRect = false;
+        if (dz) {
+          const r = dz.getBoundingClientRect();
+          const pad = 48;
+          overByRect = touch.clientX >= r.left - pad && touch.clientX <= r.right + pad &&
+                       touch.clientY >= r.top - pad && touch.clientY <= r.bottom + pad;
+        }
 
         if (isDragging) {
           setDragging(false);
           onDragEnd?.();
-          if (dropped) onTouchDrop?.(u.id);
+          if (overByClass || overByPoint || overByRect) onTouchDrop?.(u.id);
         }
       };
 
