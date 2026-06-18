@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const VIEWS = ["spiral", "grid", "table"];
 
-export default function Topbar({ search, onSearch, view, onView, onRefresh, refreshing, total, onMenu, compareCount, onComparePage, page, onDropCompare, dragging, onTourReplay }) {
+export default function Topbar({ search, onSearch, suggestions = [], onSuggestionClick, view, onView, onRefresh, refreshing, total, onMenu, compareCount, onComparePage, page, onDropCompare, dragging, onTourReplay }) {
   const activeIdx = VIEWS.indexOf(view);
   const [dragOver, setDragOver] = useState(false);
+  const [showSug, setShowSug] = useState(false);
+  const hideTimer = useRef(null);
+
+  const handleFocus = () => { clearTimeout(hideTimer.current); setShowSug(true); };
+  const handleBlur = () => { hideTimer.current = setTimeout(() => setShowSug(false), 160); };
+  const handleSugClick = (id) => { setShowSug(false); onSearch(""); onSuggestionClick(id); };
 
   const handleDragOver = (e) => { e.preventDefault(); setDragOver(true); };
   const handleDragLeave = () => setDragOver(false);
@@ -34,7 +40,23 @@ export default function Topbar({ search, onSearch, view, onView, onRefresh, refr
           placeholder="Search university, city, state..."
           value={search}
           onChange={(e) => onSearch(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
+        {search && (
+          <button className="search-clear" onMouseDown={() => { onSearch(""); setShowSug(false); }} tabIndex={-1} aria-label="Clear search">✕</button>
+        )}
+        {showSug && suggestions.length > 0 && (
+          <div className="search-suggestions">
+            {suggestions.map((u) => (
+              <div key={u.id} className="search-suggestion" onMouseDown={() => handleSugClick(u.id)}>
+                <span className="search-sug-rank">#{u.rank}</span>
+                <span className="search-sug-name">{u.name}</span>
+                <span className="search-sug-loc">{u.loc}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div className="view-toggle">
         <span className="view-slider" style={{ transform: `translateX(${activeIdx * 100}%)` }} />

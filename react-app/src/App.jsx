@@ -140,9 +140,21 @@ export default function App() {
     document.body.classList.toggle("cmp-open", compareIds.length > 0);
   }, [compareIds]);
 
+  const suggestions = useMemo(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return universities
+      .filter((u) => u.name.toLowerCase().includes(q) || u.short.toLowerCase().includes(q) || u.loc.toLowerCase().includes(q) || u.state.toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [search, universities]);
+
   const modalUni = modalId ? universities.find((u) => u.id === modalId) : null;
   const compareUnis = compareIds.map((id) => universities.find((u) => u.id === id)).filter(Boolean);
   const modalOpen = Boolean(modalUni) || showCompareModal || showProfileModal;
+
+  const modalIdx = modalUni ? filtered.findIndex((u) => u.id === modalId) : -1;
+  const onModalPrev = () => { if (modalIdx > 0) setModalId(filtered[modalIdx - 1].id); };
+  const onModalNext = () => { if (modalIdx < filtered.length - 1) setModalId(filtered[modalIdx + 1].id); };
 
   const closeModal = () => {
     setModalId(null);
@@ -155,6 +167,8 @@ export default function App() {
       <Topbar
         search={search}
         onSearch={setSearch}
+        suggestions={suggestions}
+        onSuggestionClick={(id) => setModalId(id)}
         view={view}
         onView={(v) => { setView(v); setPage("main"); }}
         onRefresh={doRefresh}
@@ -216,7 +230,7 @@ export default function App() {
           <button className="modal-close" onClick={closeModal}>✕</button>
           {showProfileModal && <ProfileModal profile={profile} onSave={saveProfile} onClose={closeModal} />}
           {!showProfileModal && showCompareModal && <CompareModal universities={compareUnis} onClose={closeModal} onClear={clearCompare} />}
-          {!showProfileModal && !showCompareModal && modalUni && <UniversityModal u={modalUni} onClose={closeModal} onToggleStar={toggleStar} onToggleCmp={toggleCmp} />}
+          {!showProfileModal && !showCompareModal && modalUni && <UniversityModal u={modalUni} onClose={closeModal} onToggleStar={toggleStar} onToggleCmp={toggleCmp} onPrev={onModalPrev} onNext={onModalNext} canPrev={modalIdx > 0} canNext={modalIdx < filtered.length - 1} navPos={modalIdx >= 0 ? `${modalIdx + 1} of ${filtered.length}` : ""} />}
         </div>
       </div>
 

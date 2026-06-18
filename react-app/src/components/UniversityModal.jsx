@@ -1,10 +1,33 @@
+import { useEffect, useRef } from "react";
 import { tierBadgeClass, tierLabel } from "../data/universities";
 import { PinIcon } from "./Icons";
 
-export default function UniversityModal({ u, onClose, onToggleStar, onToggleCmp }) {
+export default function UniversityModal({ u, onClose, onToggleStar, onToggleCmp, onPrev, onNext, canPrev, canNext, navPos }) {
+  const touchStartX = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "ArrowLeft" && canPrev) onPrev();
+      if (e.key === "ArrowRight" && canNext) onNext();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [canPrev, canNext, onPrev, onNext]);
+
   if (!u) return null;
+
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 60) return;
+    if (delta > 0 && canPrev) onPrev();
+    else if (delta < 0 && canNext) onNext();
+  };
+
   return (
-    <div>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4, paddingRight: 38 }}>
         <div>
           <div className="modal-title">{u.name}</div>
@@ -59,9 +82,18 @@ export default function UniversityModal({ u, onClose, onToggleStar, onToggleCmp 
       </div>
 
       <div className="modal-actions">
-        <a href={u.url} target="_blank" rel="noreferrer" className="mbtn primary">🌐 Official website</a>
+        <a href={u.url} target="_blank" rel="noreferrer" className="mbtn primary">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 5, verticalAlign: "middle" }}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Official website
+        </a>
         <button className="mbtn" onClick={() => { onToggleCmp(u.id); onClose(); }}>⟷ Add to compare</button>
         <button className="mbtn" onClick={() => onToggleStar(u.id)}>★ {u.starred ? "Unstar" : "Star"}</button>
+      </div>
+
+      <div className="modal-nav">
+        <button className="modal-nav-btn" onClick={onPrev} disabled={!canPrev}>← Prev</button>
+        <span className="modal-nav-pos">{navPos}</span>
+        <button className="modal-nav-btn" onClick={onNext} disabled={!canNext}>Next →</button>
       </div>
     </div>
   );
