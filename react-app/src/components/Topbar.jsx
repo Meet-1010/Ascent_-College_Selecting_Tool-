@@ -50,9 +50,11 @@ export default function Topbar({ search, onSearch, suggestions = [], onSuggestio
           <div className="search-suggestions">
             {suggestions.map((u) => (
               <div key={u.id} className="search-suggestion" onMouseDown={() => handleSugClick(u.id)}>
-                <span className="search-sug-rank">#{u.rank}</span>
                 <span className="search-sug-name">{u.name}</span>
-                <span className="search-sug-loc">{u.loc}</span>
+                <span className="search-sug-meta">
+                  <span className="search-sug-rank">#{u.rank}</span>
+                  <span className="search-sug-loc">{u.loc}</span>
+                </span>
               </div>
             ))}
           </div>
